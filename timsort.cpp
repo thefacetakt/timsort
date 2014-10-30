@@ -150,7 +150,7 @@ void test<std::string>(TestParameters currentParameters)
         proceedTest(timsortRand::generatePartlySortedArray<std::string>(
                                                                         currentParameters.lengthOfEach, 
                                                                         currentParameters.numberOfParts, stringLength
-                                                                        ),
+                                                                       ),
                     currentParameters.numberOfTest
                    );
     }
@@ -163,19 +163,19 @@ void test<std::pair<unsigned int, int> >(TestParameters currentParameters)
     if (useSpecialComparator)
     {
         proceedTest(timsortRand::generatePartlySortedArray<std::pair<unsigned int, int> >(
-                                                                                        currentParameters.lengthOfEach, 
-                                                                                        currentParameters.numberOfParts, 0, 
-                                                                                        SpecialPairComparator()
-                                                                                        ),
+                                                                                          currentParameters.lengthOfEach, 
+                                                                                          currentParameters.numberOfParts, 0, 
+                                                                                          SpecialPairComparator()
+                                                                                         ),
                     currentParameters.numberOfTest, SpecialPairComparator()
                    );
     }
     else
     {
         proceedTest(timsortRand::generatePartlySortedArray<std::pair<unsigned int, int> >(
-                                                                                        currentParameters.lengthOfEach, 
-                                                                                        currentParameters.numberOfParts, 0
-                                                                                        ),
+                                                                                          currentParameters.lengthOfEach, 
+                                                                                          currentParameters.numberOfParts, 0
+                                                                                         ),
                     currentParameters.numberOfTest
                    );
     }
@@ -188,7 +188,7 @@ void test<timSortTestClasses::Point>(TestParameters currentParameters)
                                                                                   currentParameters.lengthOfEach, 
                                                                                   currentParameters.numberOfParts, 0, 
                                                                                   timSortTestClasses::PointComparator()
-                                                                                ),
+                                                                                 ),
                     currentParameters.numberOfTest, timSortTestClasses::PointComparator()
                    );
 }
@@ -203,6 +203,8 @@ void test<timSortTestClasses::Point>(TestParameters currentParameters)
 ///typeOfTest == 6: generatePartlySortePairArray; parameters = numberOfParts, lengthOfEach, useSpecialComparator
 ///typeOfTest == 7: generatePointArray; parameters = length
 ///typeOfTest == 8: generatePartlySortedPointArray; parameters = numberOfParts, lengthOfEach
+///Notice, that if array not partly sorted, it can be treated as partly sorted with numberOfParts = length and lengthOfEach = 1. 
+///Notice, that type 2 * i + 1 and 2 * i + 2 have equal type of elements, and the even one is partly sorted - this fact is used below
 
 
 int main(int argc, char **argv)
