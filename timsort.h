@@ -393,7 +393,7 @@ namespace TimSortFunctionsAndClasses
     template <class RandomAccessIterator, class Compare>
     void processCurrentStackOfRuns(
                                    StackOfRuns<RandomAccessIterator> &runs,
-                                   const TimSortFunctionsAndClasses::ITimSortParameters* const params, Compare comp = Compare()
+                                   const ITimSortParameters* const params, Compare comp = Compare()
                                   )
     {
         while (runs.size() > 1)
