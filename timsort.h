@@ -5,7 +5,7 @@
 #include <iterator>
 
 
-namespace timSortFunctionsAndClasses
+namespace TimSortFunctionsAndClasses
 {
     enum BoundType
     {
@@ -393,7 +393,7 @@ namespace timSortFunctionsAndClasses
     template <class RandomAccessIterator, class Compare>
     void processCurrentStackOfRuns(
                                    StackOfRuns<RandomAccessIterator> &runs,
-                                   const timSortFunctionsAndClasses::ITimSortParameters* const params, Compare comp = Compare()
+                                   const TimSortFunctionsAndClasses::ITimSortParameters* const params, Compare comp = Compare()
                                   )
     {
         while (runs.size() > 1)
@@ -430,12 +430,12 @@ namespace timSortFunctionsAndClasses
 template <class RandomAccessIterator, class Compare>
 void timSort(
             RandomAccessIterator first, RandomAccessIterator last, 
-            const timSortFunctionsAndClasses::ITimSortParameters* const params, Compare comp) // comp(a, b) <=> a < b;
+            const TimSortFunctionsAndClasses::ITimSortParameters* const params, Compare comp) // comp(a, b) <=> a < b;
 {    
     unsigned int numberOfElements = last - first;
     unsigned int minRun = params->getMinRun(numberOfElements);
 
-    timSortFunctionsAndClasses::StackOfRuns<RandomAccessIterator> runs;
+    TimSortFunctionsAndClasses::StackOfRuns<RandomAccessIterator> runs;
     
 #ifdef _DEBUG_CNT_OPERATIONS
     mergeOperationsCnt = 0;
@@ -444,8 +444,8 @@ void timSort(
     
     for (RandomAccessIterator currentElement = first; currentElement != last;)
     {   
-        timSortFunctionsAndClasses::pushNextRun(currentElement, last, runs, minRun, comp);
-        timSortFunctionsAndClasses::processCurrentStackOfRuns(runs, params, comp);
+        TimSortFunctionsAndClasses::pushNextRun(currentElement, last, runs, minRun, comp);
+        TimSortFunctionsAndClasses::processCurrentStackOfRuns(runs, params, comp);
     }
     
 #ifdef _DEBUG_CNT_OPERATIONS
@@ -462,14 +462,14 @@ void timSort(
 template <class RandomAccessIterator, class Compare>
 void timSort(RandomAccessIterator first, RandomAccessIterator last, Compare comp) // comp(a, b) <=> a < b;
 {
-    timSortFunctionsAndClasses::TimSortParametersDefault params;
+    TimSortFunctionsAndClasses::TimSortParametersDefault params;
     timSort(first, last, &params, comp);
 }
 
 template<class RandomAccessIterator>
 void timSort(RandomAccessIterator first, RandomAccessIterator last)
 {
-    timSortFunctionsAndClasses::TimSortParametersDefault params;
+    TimSortFunctionsAndClasses::TimSortParametersDefault params;
     timSort(first, last, &params, std::less<typename std::iterator_traits<RandomAccessIterator>::value_type>());
 }
 

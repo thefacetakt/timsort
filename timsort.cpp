@@ -6,7 +6,7 @@
 #include "timsort.h"
 #include "tests.h"
 
-namespace timSortFunctionsAndClasses
+namespace TimSortFunctionsAndClasses
 {
     class TimSortParametersTwo : public TimSortParametersDefault
     {
@@ -33,6 +33,7 @@ namespace timSortFunctionsAndClasses
     
     TimSortParametersTwo TimSortParametersTwo::TimSortParametersTwoObject = TimSortParametersTwo();
 };
+
 
 class SpecialStringComparator
 {
@@ -71,6 +72,8 @@ public:
     unsigned int numberOfParts;
     
     unsigned int argumentsShift;    
+    
+    unsigned int additionalParameter;
 };
 
 
@@ -90,7 +93,15 @@ bool areEqual(const std::vector<ElementsType> &a, const std::vector<ElementsType
 }
 
 template <class ElementsType, class Compare>
-double sortAndGetTime(std::vector <ElementsType> &arrayToSort, void (*sort)(typename std::vector<ElementsType>::iterator, typename std::vector<ElementsType>::iterator, Compare), Compare comp)
+double sortAndGetTime(
+                      std::vector <ElementsType> &arrayToSort, 
+                      void (*sort)(
+                                   typename std::vector<ElementsType>::iterator,
+                                   typename std::vector<ElementsType>::iterator, 
+                                   Compare
+                                  ), 
+                      Compare comp
+                     )
 {
     clock_t begin = clock();
     sort(arrayToSort.begin(), arrayToSort.end(), comp);
@@ -118,79 +129,34 @@ void proceedTest(std::vector<ElementsType> arrayToSort, unsigned int numberOfTes
     }
 }
 
-template<class ElementsType>
-void test(TestParameters currentParameters)
+template<class ElementsType, class Compare>
+void test(TestParameters currentParameters, Compare comp)
 {
-    proceedTest(timsortRand::generatePartlySortedArray<ElementsType>(currentParameters.lengthOfEach, currentParameters.numberOfParts), currentParameters.numberOfTest);
+    proceedTest(
+                TimsortRand::generatePartlySortedArray<ElementsType>(
+                                                                     currentParameters.lengthOfEach,
+                                                                     currentParameters.numberOfParts,
+                                                                     currentParameters.additionalParameter,
+                                                                     comp
+                                                                    ),
+                currentParameters.numberOfTest,
+                comp
+               );
 }
 
-template<>
-void test<std::string>(TestParameters currentParameters)
+template<class ElementsType, class SpecialCompare = std::less<ElementsType>, class Compare = std::less<ElementsType> >
+void chooseComparatorAndTest(TestParameters currentParameters, SpecialCompare specialComp = SpecialCompare(), Compare comp = Compare())
 {
-    if (currentParameters.argc <= currentParameters.argumentsShift)
-    {
-        throw "Not enough parameters - I can't distinguish string length\n";
-    }
-    
-    unsigned int stringLength = atoi(currentParameters.argv[currentParameters.argumentsShift++]);
-    bool useSpecialComparator = (currentParameters.argc != currentParameters.argumentsShift);
+    bool useSpecialComparator = (currentParameters.argc == currentParameters.argumentsShift);
     
     if (useSpecialComparator)
     {
-        proceedTest(timsortRand::generatePartlySortedArray<std::string>(
-                                                                        currentParameters.lengthOfEach, 
-                                                                        currentParameters.numberOfParts, stringLength, 
-                                                                        SpecialStringComparator()
-                                                                       ),
-                    currentParameters.numberOfTest, SpecialStringComparator()
-                   );
+        test<ElementsType>(currentParameters, specialComp);
     }
     else
     {
-        proceedTest(timsortRand::generatePartlySortedArray<std::string>(
-                                                                        currentParameters.lengthOfEach, 
-                                                                        currentParameters.numberOfParts, stringLength
-                                                                       ),
-                    currentParameters.numberOfTest
-                   );
+        test<ElementsType>(currentParameters, comp);
     }
-}
-
-template<>
-void test<std::pair<unsigned int, int> >(TestParameters currentParameters)
-{
-    bool useSpecialComparator = (currentParameters.argc != currentParameters.argumentsShift);
-    if (useSpecialComparator)
-    {
-        proceedTest(timsortRand::generatePartlySortedArray<std::pair<unsigned int, int> >(
-                                                                                          currentParameters.lengthOfEach, 
-                                                                                          currentParameters.numberOfParts, 0, 
-                                                                                          SpecialPairComparator()
-                                                                                         ),
-                    currentParameters.numberOfTest, SpecialPairComparator()
-                   );
-    }
-    else
-    {
-        proceedTest(timsortRand::generatePartlySortedArray<std::pair<unsigned int, int> >(
-                                                                                          currentParameters.lengthOfEach, 
-                                                                                          currentParameters.numberOfParts, 0
-                                                                                         ),
-                    currentParameters.numberOfTest
-                   );
-    }
-}
-
-template<>
-void test<timSortTestClasses::Point>(TestParameters currentParameters)
-{
-    proceedTest(timsortRand::generatePartlySortedArray<timSortTestClasses::Point>(
-                                                                                  currentParameters.lengthOfEach, 
-                                                                                  currentParameters.numberOfParts, 0, 
-                                                                                  timSortTestClasses::PointComparator()
-                                                                                 ),
-                    currentParameters.numberOfTest, timSortTestClasses::PointComparator()
-                   );
 }
 
 
@@ -219,8 +185,9 @@ int main(int argc, char **argv)
     unsigned int numberOfParts = atoi(argv[3u]);
     unsigned int lengthOfEach = 1u;
     unsigned int argumentsShift = 4u;
+    unsigned int additionalParameter = 0u;
     
-    timsortRand::srand(numberOfTest);
+    TimsortRand::srand(numberOfTest);
     
     if (typeOfTest % 2u == 0u)
     {
@@ -231,23 +198,34 @@ int main(int argc, char **argv)
         lengthOfEach = atoi(argv[argumentsShift++]);
     }
     
-    TestParameters currentParameters = {argc, argv, numberOfTest, lengthOfEach, numberOfParts, argumentsShift};    
-    
     typeOfTest = (typeOfTest + 1) / 2u;
-   
+    
+    if (typeOfTest == 2u) ///string
+    {
+        if (argc == argumentsShift)
+        {
+            throw "Not enough parameters - I can't distinguish string length\n";
+        }
+        additionalParameter = atoi(argv[argumentsShift++]);
+    }
+    
+    TestParameters currentParameters = {argc, argv, numberOfTest, lengthOfEach, numberOfParts, argumentsShift, additionalParameter};    
+    
+    
+    
     switch (typeOfTest)
     {
         case 1u:
-            test<int>(currentParameters);
+            chooseComparatorAndTest<int>(currentParameters);
             break;
         case 2u:
-            test<std::string>(currentParameters);
+            chooseComparatorAndTest<std::string>(currentParameters, SpecialStringComparator());
             break;
         case 3u:
-            test<std::pair<unsigned int, int> >(currentParameters);
+            chooseComparatorAndTest<std::pair<unsigned int, int> >(currentParameters, SpecialPairComparator());
             break;
         case 4u:
-            test<timSortTestClasses::Point>(currentParameters);
+            chooseComparatorAndTest<TimSortTestClasses::Point>(currentParameters, TimSortTestClasses::PointComparator(), TimSortTestClasses::PointComparator());
             break;
         default:
             throw "No such test type\n";

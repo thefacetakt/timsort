@@ -6,9 +6,8 @@
 #include <algorithm>
 #include <vector>
 #include <string>
-#include <typeinfo>
 
-namespace timSortTestClasses
+namespace TimSortTestClasses
 {
     class Point
     {
@@ -55,14 +54,14 @@ namespace timSortTestClasses
 };
 
 
-namespace timsortRand
+namespace TimsortRand
 {
     ///Implemented my own rand to guarantee, that equal tests will be generated on different compilers
     unsigned int seed = 1951u;
 
     void srand(unsigned int seed)
     {
-        timsortRand::seed = seed;
+        TimsortRand::seed = seed;
     }
 
     const unsigned int firstRandCoeff = 211u;
@@ -103,7 +102,7 @@ namespace timsortRand
     class GenerateElement<int>
     {    
     public:
-        GenerateElement(int additionalParameter=0) 
+        GenerateElement(unsigned int additionalParameter=0u) 
         {
         }
         
@@ -117,7 +116,7 @@ namespace timsortRand
     class GenerateElement<std::pair<unsigned int, int>>
     {    
     public:
-        GenerateElement(int additionalParameter=0) 
+        GenerateElement(unsigned int additionalParameter=0u) 
         {
         }
         
@@ -133,7 +132,7 @@ namespace timsortRand
     template<>
     class GenerateElement<std::string>
     {
-        int length;
+        unsigned int length;
         
     public:
         GenerateElement()
@@ -141,7 +140,7 @@ namespace timsortRand
             throw "No length provided\n";
         }
         
-        GenerateElement(int length) : length(length)
+        GenerateElement(unsigned int length) : length(length)
         {
         }
         
@@ -154,23 +153,23 @@ namespace timsortRand
     };
     
     template<>
-    class GenerateElement<timSortTestClasses::Point>
+    class GenerateElement<TimSortTestClasses::Point>
     {    
     public:
-        GenerateElement(int additionalParameter=0) 
+        GenerateElement(unsigned int additionalParameter=0u) 
         {
         }
         
-        timSortTestClasses::Point operator()() const
+        TimSortTestClasses::Point operator()() const
         {
-            return timSortTestClasses::Point(generateInt(), generateInt());
+            return TimSortTestClasses::Point(generateInt(), generateInt());
         }
     };
     
     
     
     template<class ElementType, class Compare=std::less<ElementType> >
-    std::vector <ElementType> generatePartlySortedArray(unsigned int lengthOfEach, unsigned int numberOfParts, unsigned int additionalParameter=0, Compare comp = Compare())
+    std::vector <ElementType> generatePartlySortedArray(unsigned int lengthOfEach, unsigned int numberOfParts, unsigned int additionalParameter=0u, Compare comp = Compare())
     {
         std::vector <ElementType> result(lengthOfEach * numberOfParts);
         
