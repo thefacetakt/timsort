@@ -43,11 +43,20 @@ namespace TimSortTestClasses
         bool operator()(const Point &a, const Point &b) const
         {
             if (a.isUp() && !b.isUp())
+            {
                 return true;
+            }
+            
             if (!a.isUp() && b.isUp())
+            {
                 return false;
+            }
+            
             if ((a * b) == 0)
-            return a.sqLen() < b.sqLen();
+            {
+                return a.sqLen() < b.sqLen();
+            }
+            
             return (a * b) > 0;
         }
     };
@@ -64,16 +73,16 @@ namespace TimsortRand
         TimsortRand::seed = seed;
     }
 
-    const unsigned int firstRandCoeff = 211u;
+    const unsigned int FIRST_RAND_COEFF = 211u;
     
-    const unsigned int secondRandCoeff = 1481u;
+    const unsigned int SECOND_RAND_COEFF = 1481u;
     
-    const unsigned int modulo = 4294967291u;
+    const unsigned int MODULO = 4294967291u;
 
     unsigned int rand()
     {
         static unsigned int x = seed;
-        return (x = 1ll * firstRandCoeff * x + secondRandCoeff) % modulo;
+        return (x = 1ll * FIRST_RAND_COEFF * x + SECOND_RAND_COEFF) % MODULO;
     }
     
 
@@ -113,7 +122,7 @@ namespace TimsortRand
     };
     
     template<>
-    class GenerateElement<std::pair<unsigned int, int>>
+    class GenerateElement<std::pair<unsigned int, int> >
     {    
     public:
         GenerateElement(unsigned int additionalParameter=0u) 
@@ -165,7 +174,6 @@ namespace TimsortRand
             return TimSortTestClasses::Point(generateInt(), generateInt());
         }
     };
-    
     
     
     template<class ElementType, class Compare=std::less<ElementType> >

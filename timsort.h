@@ -98,8 +98,8 @@ namespace TimSortFunctionsAndClasses
 
 
 #ifdef _DEBUG_CNT_OPERATIONS
-        int insertionSortIterationsCnt;
-        int mergeOperationsCnt;
+    int insertionSortIterationsCnt;
+    int mergeOperationsCnt;
 #endif
 
     template<class RandomAccessIterator>
@@ -229,7 +229,7 @@ namespace TimSortFunctionsAndClasses
     void doMove(
                 RandomAccessIterator &begin, const RandomAccessIterator &end, const TypeOfValueToCompareWith &valueToCompareWith,
                 OutputIterator &output, BoundType boundType, Compare comp
-            )
+               )
     {
         RandomAccessIterator nextElementIterator;
         
@@ -250,10 +250,10 @@ namespace TimSortFunctionsAndClasses
 
     template <class RandomAccessIterator, class Compare>
     void mergeLeft(
-                const RandomAccessIterator &first, const RandomAccessIterator &middle,
-                const RandomAccessIterator &last, Compare comp,
-                const ITimSortParameters* const params
-                )
+                   const RandomAccessIterator &first, const RandomAccessIterator &middle,
+                   const RandomAccessIterator &last, Compare comp,
+                   const ITimSortParameters* const params
+                  )
     {
         
 #ifdef _USE_STD_INPLACE_MERGE
@@ -324,7 +324,7 @@ namespace TimSortFunctionsAndClasses
                     const RandomAccessIterator &first, const RandomAccessIterator &middle,
                     const RandomAccessIterator &last, Compare comp,
                     const ITimSortParameters* const params
-                )
+                   )
     {
         typedef std::reverse_iterator<RandomAccessIterator> RIter;
         mergeLeft(RIter(last), RIter(middle), RIter(first), ReverseComparator<decltype(comp)>(comp), params);
@@ -333,10 +333,10 @@ namespace TimSortFunctionsAndClasses
 
     template <class RandomAccessIterator, class Compare>
     void merge(
-            const RandomAccessIterator &first, const RandomAccessIterator &middle,
-            const RandomAccessIterator &last, Compare comp,
-            const ITimSortParameters* const params
-            )
+               const RandomAccessIterator &first, const RandomAccessIterator &middle,
+               const RandomAccessIterator &last, Compare comp,
+               const ITimSortParameters* const params
+              )
     {   
 #ifdef _DEBUG_CNT_OPERATIONS
         mergeOperationsCnt += (last - first);
@@ -358,11 +358,11 @@ namespace TimSortFunctionsAndClasses
     ///After procedure, currentElement iterator points to the first element of next run or to the last element
     template<class RandomAccessIterator, class Compare>
     void pushNextRun(
-                    RandomAccessIterator &currentElement, const RandomAccessIterator &last,
-                    StackOfRuns<RandomAccessIterator> &runs, unsigned int minRun, Compare comp
+                     RandomAccessIterator &currentElement, const RandomAccessIterator &last,
+                     StackOfRuns<RandomAccessIterator> &runs, unsigned int minRun, Compare comp
                     )
     {
-            Run<RandomAccessIterator> nextRun(currentElement++, 1);
+            Run<RandomAccessIterator> nextRun(currentElement++, 1u);
             
             if (currentElement != last)
             {
@@ -429,8 +429,9 @@ namespace TimSortFunctionsAndClasses
 
 template <class RandomAccessIterator, class Compare>
 void timSort(
-            RandomAccessIterator first, RandomAccessIterator last, 
-            const TimSortFunctionsAndClasses::ITimSortParameters* const params, Compare comp) // comp(a, b) <=> a < b;
+             RandomAccessIterator first, RandomAccessIterator last, 
+             const TimSortFunctionsAndClasses::ITimSortParameters* const params, Compare comp
+            ) // comp(a, b) <=> a < b;
 {    
     unsigned int numberOfElements = last - first;
     unsigned int minRun = params->getMinRun(numberOfElements);
@@ -460,7 +461,7 @@ void timSort(
 }
 
 template <class RandomAccessIterator, class Compare>
-void timSort(RandomAccessIterator first, RandomAccessIterator last, Compare comp) // comp(a, b) <=> a < b;
+void timSort(RandomAccessIterator first, RandomAccessIterator last, Compare comp) /// comp(a, b) <=> a < b;
 {
     TimSortFunctionsAndClasses::TimSortParametersDefault params;
     timSort(first, last, &params, comp);
@@ -472,6 +473,5 @@ void timSort(RandomAccessIterator first, RandomAccessIterator last)
     TimSortFunctionsAndClasses::TimSortParametersDefault params;
     timSort(first, last, &params, std::less<typename std::iterator_traits<RandomAccessIterator>::value_type>());
 }
-
 
 #endif
